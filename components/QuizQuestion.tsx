@@ -1,4 +1,4 @@
-import { Question } from '@/lib/questions';
+import { Question } from '@/data/questions';
 
 interface QuizQuestionProps {
   question: Question;
