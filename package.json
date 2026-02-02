@@ -1,1 +1,25 @@
-{"name": "strategic-management-quiz", "version": "1.0.0", "description": "Interactive Strategic Management Quiz", "scripts": {"dev": "next dev", "build": "next build", "start": "next start", "lint": "next lint"}, "dependencies": {"react": "^18.2.0", "react-dom": "^18.2.0", "next": "^14.0.0"}, "devDependencies": {"@types/node": "^20.10.0", "@types/react": "^18.2.42", "@types/react-dom": "^18.2.17", "typescript": "^5.3.3"}}
+{
+  "name": "strategic-management-quiz",
+  "version": "1.0.0",
+  "description": "Interactive Strategic Management Quiz webapp for exam preparation",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.42",
+    "@types/react-dom": "^18.2.17",
+    "typescript": "^5.3.3",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16"
+  }
+}
