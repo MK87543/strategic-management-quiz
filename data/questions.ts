@@ -277,7 +277,8 @@ export const questions: Question[] = [
     id: 39,
     question: "What do all organizations have in common?",
     options: ["Objectives, People, Structure", "Objectives, Bureaucracy, R&D", "Management, Guidelines, Incentives", "People, Profit, Products"],
-    correct: "Objectives, People, Structure",\n    explanation: "The fundamental elements of any organization are People, Objectives (Goals), and Structure."
+    correct: "Objectives, People, Structure",
+    explanation: "The fundamental elements of any organization are People, Objectives (Goals), and Structure."
   },
   {
     id: 40,
@@ -339,6 +340,7 @@ export const questions: Question[] = [
     id: 48,
     question: "A 'first-mover' strategy involves:",
     options: ["Waiting for competitors to test the market", "Launching first to gain competitive advantage and brand recognition", "Copying the market leader", "Focusing only on cost reduction"],
-    correct: "Launching first to gain competitive advantage and brand recognition",\n    explanation: "First movers gain advantage by setting standards and building loyalty before competitors arrive."
+    correct: "Launching first to gain competitive advantage and brand recognition",
+    explanation: "First movers gain advantage by setting standards and building loyalty before competitors arrive."
   }
 ];
