@@ -2,6 +2,9 @@
   "name": "strategic-management-quiz",
   "version": "1.0.0",
   "description": "Interactive Strategic Management Quiz webapp for exam preparation",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
