@@ -30,20 +30,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        body {
-          font-family: 'Poppins', sans-serif;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .fadeIn {
-          animation: fadeIn 0.5s ease-in-out;
-        }
-      `}</style>
-
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center fadeIn">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
           Strategic Management Quiz

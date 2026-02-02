@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Question } from '@/lib/questions';
 
 interface QuizFeedbackProps {
@@ -8,7 +9,7 @@ interface QuizFeedbackProps {
   isLastQuestion: boolean;
 }
 
-export default function QuizFeedback({
+function QuizFeedback({
   question,
   options,
   userAnswer,
@@ -61,3 +62,5 @@ export default function QuizFeedback({
     </div>
   );
 }
+
+export default memo(QuizFeedback);

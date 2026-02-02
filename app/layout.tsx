@@ -1,10 +1,15 @@
-import type { Metadata } from 'next';
 import './globals.css';
+import { Poppins } from 'next/font/google';
 
-export const metadata: Metadata = {
+const poppins = Poppins({
+  weight: ['300', '400', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+export const metadata = {
   title: 'Strategic Management Quiz',
-  description: 'Interactive quiz for strategic management exam preparation',
-  viewport: 'width=device-width, initial-scale=1.0',
+  description: 'Master your exam prep with interactive quiz questions',
 };
 
 export default function RootLayout({
@@ -13,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.className}>
       <body>{children}</body>
     </html>
   );
