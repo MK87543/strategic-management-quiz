@@ -26,6 +26,7 @@ export default function QuizPage() {
   const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Initialize quiz session
   useEffect(() => {
     const initializeQuiz = async () => {
       try {
@@ -33,6 +34,7 @@ export default function QuizPage() {
         const data = await res.json();
         setQuestions(data.questions);
 
+        // Initialize session
         const questionOrder = Array.from({ length: data.questions.length }, (_, i) => i).sort(
           () => Math.random() - 0.5
         );
@@ -43,6 +45,7 @@ export default function QuizPage() {
         };
         setSession(newSession);
 
+        // Shuffle options for first question
         if (data.questions.length > 0) {
           const q = data.questions[questionOrder[0]];
           const shuffled = [...q.options].sort(() => Math.random() - 0.5);
@@ -110,8 +113,23 @@ export default function QuizPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body {
+          font-family: 'Poppins', sans-serif;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .fadeIn {
+          animation: fadeIn 0.3s ease-in-out;
+        }
+      `}</style>
+
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-3xl shadow-2xl p-8 fadeIn">
+          {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>Question {session.currentIndex + 1} of {questions.length}</span>

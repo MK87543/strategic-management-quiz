@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Question } from '@/lib/questions';
 
 interface QuizQuestionProps {
@@ -7,7 +6,7 @@ interface QuizQuestionProps {
   onAnswer: (answer: string) => void;
 }
 
-function QuizQuestion({
+export default function QuizQuestion({
   question,
   options,
   onAnswer,
@@ -30,5 +29,3 @@ function QuizQuestion({
     </div>
   );
 }
-
-export default memo(QuizQuestion);
