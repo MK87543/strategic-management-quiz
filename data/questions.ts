@@ -6,7 +6,7 @@ export interface Question {
   explanation: string;
 }
 
-export const QUESTIONS_DB: Question[] = [
+export const questions: Question[] = [
   {
     id: 1,
     question: "Based on the data: Business A (Prod Index 111, Cost 103), Business B (Prod Index 108, Cost 95), Business C (Prod Index 99, Cost 95), Business D (Prod Index 80, Cost 110). Which business appears to be achieving economies of scale?",
@@ -277,8 +277,7 @@ export const QUESTIONS_DB: Question[] = [
     id: 39,
     question: "What do all organizations have in common?",
     options: ["Objectives, People, Structure", "Objectives, Bureaucracy, R&D", "Management, Guidelines, Incentives", "People, Profit, Products"],
-    correct: "Objectives, People, Structure",
-    explanation: "The fundamental elements of any organization are People, Objectives (Goals), and Structure."
+    correct: "Objectives, People, Structure",\n    explanation: "The fundamental elements of any organization are People, Objectives (Goals), and Structure."
   },
   {
     id: 40,
@@ -340,7 +339,6 @@ export const QUESTIONS_DB: Question[] = [
     id: 48,
     question: "A 'first-mover' strategy involves:",
     options: ["Waiting for competitors to test the market", "Launching first to gain competitive advantage and brand recognition", "Copying the market leader", "Focusing only on cost reduction"],
-    correct: "Launching first to gain competitive advantage and brand recognition",
-    explanation: "First movers gain advantage by setting standards and building loyalty before competitors arrive."
+    correct: "Launching first to gain competitive advantage and brand recognition",\n    explanation: "First movers gain advantage by setting standards and building loyalty before competitors arrive."
   }
 ];

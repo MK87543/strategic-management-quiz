@@ -1,164 +1,130 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import QuizQuestion from '@/components/QuizQuestion';
-import QuizFeedback from '@/components/QuizFeedback';
-import { Question } from '@/lib/questions';
-
-interface QuizSession {
-  questionOrder: number[];
-  currentIndex: number;
-  score: number;
-}
-
-interface SubmissionResult {
-  correct: boolean;
-  userAnswer: string;
-}
+import { questions } from '@/data/questions';
+import { ChevronRight, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function QuizPage() {
   const router = useRouter();
-  const [session, setSession] = useState<QuizSession | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [lastResult, setLastResult] = useState<SubmissionResult | null>(null);
-  const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [score, setScore] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [shuffledQuestions, setShuffledQuestions] = useState(() => 
+    [...questions].sort(() => Math.random() - 0.5)
+  );
 
-  // Initialize quiz session
-  useEffect(() => {
-    const initializeQuiz = async () => {
-      try {
-        const res = await fetch('/api/questions');
-        const data = await res.json();
-        setQuestions(data.questions);
+  const question = shuffledQuestions[currentIdx];
+  const progress = ((currentIdx) / questions.length) * 100;
 
-        // Initialize session
-        const questionOrder = Array.from({ length: data.questions.length }, (_, i) => i).sort(
-          () => Math.random() - 0.5
-        );
-        const newSession: QuizSession = {
-          questionOrder,
-          currentIndex: 0,
-          score: 0,
-        };
-        setSession(newSession);
-
-        // Shuffle options for first question
-        if (data.questions.length > 0) {
-          const q = data.questions[questionOrder[0]];
-          const shuffled = [...q.options].sort(() => Math.random() - 0.5);
-          setShuffledOptions(shuffled);
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error initializing quiz:', error);
-        setIsLoading(false);
-      }
-    };
-
-    initializeQuiz();
-  }, []);
-
-  if (isLoading || !session || questions.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
-        <p className="text-gray-600">Loading quiz...</p>
-      </div>
-    );
-  }
-
-  const currentQuestionId = session.questionOrder[session.currentIndex];
-  const currentQuestion = questions[currentQuestionId];
-
-  if (!currentQuestion) {
-    router.push(`/results?score=${session.score}&total=${questions.length}`);
-    return null;
-  }
-
-  const handleAnswer = (answer: string) => {
-    const isCorrect = answer === currentQuestion.correct;
-    setLastResult({ correct: isCorrect, userAnswer: answer });
-    setShowFeedback(true);
-
-    if (isCorrect) {
-      setSession({
-        ...session,
-        score: session.score + 1,
-      });
+  const handleAnswer = (option: string) => {
+    if (isAnswered) return;
+    setSelectedAnswer(option);
+    setIsAnswered(true);
+    if (option === question.correct) {
+      setScore(s => s + 1);
     }
   };
 
-  const handleNext = () => {
-    if (session.currentIndex + 1 >= session.questionOrder.length) {
-      router.push(`/results?score=${session.score + (lastResult?.correct ? 1 : 0)}&total=${questions.length}`);
+  const nextQuestion = () => {
+    if (currentIdx + 1 < questions.length) {
+      setCurrentIdx(c => c + 1);
+      setSelectedAnswer(null);
+      setIsAnswered(false);
     } else {
-      const nextIndex = session.currentIndex + 1;
-      const nextQuestionId = session.questionOrder[nextIndex];
-      const nextQuestion = questions[nextQuestionId];
-      const shuffled = [...nextQuestion.options].sort(() => Math.random() - 0.5);
-      setShuffledOptions(shuffled);
-
-      setSession({
-        ...session,
-        currentIndex: nextIndex,
-        score: session.score + (lastResult?.correct ? 1 : 0),
-      });
-      setShowFeedback(false);
-      setLastResult(null);
+      router.push(`/results?score=${score + (selectedAnswer === question.correct ? 0 : 0)}&total=${questions.length}`);
     }
   };
+
+  if (!question) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        body {
-          font-family: 'Poppins', sans-serif;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .fadeIn {
-          animation: fadeIn 0.3s ease-in-out;
-        }
-      `}</style>
-
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 fadeIn">
-          {/* Progress Bar */}
-          <div className="mb-6">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Question {session.currentIndex + 1} of {questions.length}</span>
-              <span className="font-semibold text-blue-600">Score: {session.score}</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="bg-gradient-to-r from-blue-600 to-purple-600 h-3 rounded-full transition-all duration-500"
-                style={{
-                  width: `${((session.currentIndex + 1) / questions.length) * 100}%`,
-                }}
-              />
+    <div className="min-h-screen bg-slate-50 py-8 px-4">
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex justify-between items-center">
+          <div>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Question</span>
+            <div className="text-xl font-bold text-slate-800">
+              {currentIdx + 1} <span className="text-slate-300">/</span> {questions.length}
             </div>
           </div>
+          <div className="text-right">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Score</span>
+            <div className="text-xl font-bold text-indigo-600">{score}</div>
+          </div>
+        </div>
 
-          {showFeedback && lastResult ? (
-            <QuizFeedback
-              question={currentQuestion}
-              options={shuffledOptions}
-              userAnswer={lastResult.userAnswer}
-              onNext={handleNext}
-              isLastQuestion={session.currentIndex === questions.length - 1}
-            />
-          ) : (
-            <QuizQuestion
-              question={currentQuestion}
-              options={shuffledOptions}
-              onAnswer={handleAnswer}
-            />
+        {/* Progress Bar */}
+        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-indigo-600 transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* Question Card */}
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+          <div className="p-8 border-b border-slate-100">
+            <h2 className="text-xl font-medium text-slate-800 leading-relaxed">
+              {question.question}
+            </h2>
+          </div>
+
+          <div className="p-6 space-y-3 bg-slate-50/50">
+            {question.options.map((option, idx) => {
+              const isSelected = selectedAnswer === option;
+              const isCorrect = option === question.correct;
+              
+              let buttonStyle = "hover:border-indigo-300 hover:bg-indigo-50";
+              if (isAnswered) {
+                if (isCorrect) buttonStyle = "bg-green-50 border-green-500 ring-1 ring-green-500 text-green-700";
+                else if (isSelected) buttonStyle = "bg-red-50 border-red-500 ring-1 ring-red-500 text-red-700";
+                else buttonStyle = "opacity-50 grayscale";
+              }
+
+              return (
+                <button
+                  key={idx}
+                  onClick={() => handleAnswer(option)}
+                  disabled={isAnswered}
+                  className={cn(
+                    "w-full text-left p-4 rounded-xl border border-slate-200 bg-white transition-all duration-200 flex items-center justify-between group",
+                    buttonStyle
+                  )}
+                >
+                  <span className="font-medium">{option}</span>
+                  {isAnswered && isCorrect && <CheckCircle2 className="w-5 h-5 text-green-600" />}
+                  {isAnswered && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-red-600" />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Feedback Section */}
+          {isAnswered && (
+            <div className="p-6 bg-slate-50 border-t border-slate-100 animate-in fade-in slide-in-from-bottom-4">
+              <div className="flex gap-4 mb-6">
+                <div className="bg-indigo-100 p-2 rounded-lg h-fit">
+                  <AlertCircle className="w-6 h-6 text-indigo-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-1">Explanation</h4>
+                  <p className="text-slate-600 leading-relaxed text-sm">
+                    {question.explanation}
+                  </p>
+                </div>
+              </div>
+              
+              <button
+                onClick={nextQuestion}
+                className="w-full bg-indigo-600 text-white py-4 rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
+              >
+                Next Question <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           )}
         </div>
       </div>

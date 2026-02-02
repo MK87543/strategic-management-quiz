@@ -1,96 +1,45 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { questions } from "@/data/questions";
 
 export default function Home() {
-  const router = useRouter();
-  const [totalQuestions, setTotalQuestions] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchQuestionCount() {
-      try {
-        const res = await fetch('/api/questions');
-        const data = await res.json();
-        setTotalQuestions(data.total);
-      } catch (error) {
-        console.error('Error fetching questions:', error);
-        setTotalQuestions(48);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchQuestionCount();
-  }, []);
-
-  const handleStart = () => {
-    router.push('/quiz');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        body {
-          font-family: 'Poppins', sans-serif;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .fadeIn {
-          animation: fadeIn 0.5s ease-in-out;
-        }
-      `}</style>
+    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-indigo-600 p-8 text-center">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Strategic Management Quiz
+          </h1>
+          <p className="text-indigo-100">
+            Master your exam preparation
+          </p>
+        </div>
+        
+        <div className="p-8 text-center">
+          <div className="mb-8">
+            <span className="text-5xl font-bold text-slate-800 block mb-2">
+              {questions.length}
+            </span>
+            <span className="text-slate-500 uppercase tracking-wide text-sm font-semibold">
+              Questions Available
+            </span>
+          </div>
+          
+          <p className="text-slate-600 mb-8 leading-relaxed max-w-md mx-auto">
+            Test your knowledge on economies of scale, innovation types, 
+            Porter's strategies, and organizational structures.
+          </p>
 
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center fadeIn">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          Strategic Management Quiz
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          {isLoading ? (
-            <span>Loading...</span>
-          ) : (
-            <>
-              Master your exam prep with <span className="font-semibold text-blue-600">{totalQuestions}</span> questions derived
-              directly from your study material.
-            </>
-          )}
-        </p>
-
-        <div className="flex gap-4 justify-center flex-wrap">
-          <button
-            onClick={handleStart}
-            className="px-12 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+          <a 
+            href="/quiz" 
+            className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
           >
-            Start Quiz
-          </button>
-          <a
-            href="https://github.com/MK87543/strategic-management-quiz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-12 py-4 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition-all duration-300"
-          >
-            View on GitHub
+            Start Quiz Now
           </a>
         </div>
-
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <p className="text-sm text-gray-500 mb-4">Features:</p>
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left text-gray-700">
-            <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-bold">✓</span> Randomized Questions
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-bold">✓</span> Instant Feedback
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-blue-600 font-bold">✓</span> Score Tracking
-            </li>
-          </ul>
+        
+        <div className="bg-slate-50 p-4 text-center text-slate-400 text-sm">
+          Updated for 2024 Exam Prep
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,108 +1,99 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense } from 'react';
+import { RotateCcw, Home as HomeIcon } from 'lucide-react';
 
-export default function ResultsPage() {
-  const router = useRouter();
+function ResultsContent() {
   const searchParams = useSearchParams();
-  const [score, setScore] = useState(0);
-  const [total, setTotal] = useState(1);
-
-  useEffect(() => {
-    const scoreParam = searchParams.get('score');
-    const totalParam = searchParams.get('total');
-    if (scoreParam) setScore(parseInt(scoreParam));
-    if (totalParam) setTotal(parseInt(totalParam));
-  }, [searchParams]);
-
+  const router = useRouter();
+  
+  const score = parseInt(searchParams.get('score') || '0');
+  const total = parseInt(searchParams.get('total') || '1');
   const percentage = Math.round((score / total) * 100);
 
-  const getPerformanceMessage = () => {
-    if (percentage >= 90) return '🎉 Outstanding! You\'re quiz master!';
-    if (percentage >= 80) return '🌟 Great job! You\'ve got this!';
-    if (percentage >= 70) return '👍 Good work! Keep studying!';
-    if (percentage >= 60) return '📚 Nice try! Review the material!';
-    return '💪 Keep practicing! You\'ll improve!';
-  };
+  let message = '';
+  let colorClass = '';
+
+  if (percentage >= 90) {
+    message = "Outstanding! You're a strategy master!";
+    colorClass = "text-green-600";
+  } else if (percentage >= 70) {
+    message = "Great job! You've got a solid grasp.";
+    colorClass = "text-blue-600";
+  } else if (percentage >= 50) {
+    message = "Good effort! A bit more study will help.";
+    colorClass = "text-amber-600";
+  } else {
+    message = "Keep practicing! Review the core concepts.";
+    colorClass = "text-red-600";
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        body {
-          font-family: 'Poppins', sans-serif;
-        }
-        @keyframes scaleIn {
-          from { transform: scale(0.8); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        .scaleIn {
-          animation: scaleIn 0.5s ease-out;
-        }
-      `}</style>
+    <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-in zoom-in duration-300">
+      <h1 className="text-3xl font-bold text-slate-900 mb-8">Quiz Complete!</h1>
 
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Quiz Completed!</h1>
-
-        <div className="my-12 scaleIn">
-          <div className="inline-block relative">
-            <svg className="w-48 h-48" viewBox="0 0 200 200">
-              <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                stroke="#e5e7eb"
-                strokeWidth="8"
-              />
-              <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                stroke="url(#gradient)"
-                strokeWidth="8"
-                strokeDasharray={`${(percentage / 100) * 565.5} 565.5`}
-                strokeLinecap="round"
-                style={{ transition: 'stroke-dasharray 1s ease-out' }}
-              />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2563eb" />
-                  <stop offset="100%" stopColor="#7c3aed" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div>
-                <div className="text-5xl font-bold text-gray-900">{percentage}%</div>
-                <div className="text-sm text-gray-600">Correct</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <p className="text-2xl font-semibold text-gray-800 mb-2">
-          {score} out of {total} correct
-        </p>
-        <p className="text-xl text-gray-600 mb-8">{getPerformanceMessage()}</p>
-
-        <div className="flex gap-4 justify-center flex-wrap">
-          <button
-            onClick={() => router.push('/')}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:shadow-lg transition-all duration-300"
-          >
-            Restart Quiz
-          </button>
-          <a
-            href="/"
-            className="px-8 py-3 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition-all duration-300"
-          >
-            Back to Home
-          </a>
+      <div className="relative w-48 h-48 mx-auto mb-8">
+        <svg className="w-full h-full transform -rotate-90">
+          <circle
+            cx="96"
+            cy="96"
+            r="88"
+            className="stroke-slate-100"
+            strokeWidth="12"
+            fill="none"
+          />
+          <circle
+            cx="96"
+            cy="96"
+            r="88"
+            className="stroke-indigo-600 transition-all duration-1000 ease-out"
+            strokeWidth="12"
+            fill="none"
+            strokeDasharray={553}
+            strokeDashoffset={553 - (553 * percentage) / 100}
+            strokeLinecap="round"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-5xl font-bold text-slate-800">{percentage}%</span>
+          <span className="text-sm text-slate-400 font-medium uppercase tracking-wider mt-1">Score</span>
         </div>
       </div>
+
+      <div className="mb-8">
+        <p className="text-2xl font-bold text-slate-700 mb-2">
+          {score} / {total} Correct
+        </p>
+        <p className={`font-medium ${colorClass}`}>
+          {message}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <button
+          onClick={() => router.push('/quiz')}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+        >
+          <RotateCcw className="w-4 h-4" /> Try Again
+        </button>
+        <button
+          onClick={() => router.push('/')}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold hover:bg-slate-200 transition-colors"
+        >
+          <HomeIcon className="w-4 h-4" /> Home
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <Suspense fallback={<div>Loading result...</div>}>
+        <ResultsContent />
+      </Suspense>
     </div>
   );
 }
